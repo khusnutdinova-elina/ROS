@@ -24,7 +24,7 @@ bool win_lose(package_lab1::Roulette_bet::Request  &req,
   {
     res.result = std::string("lose").c_str();
   }
-  ROS_INFO("Sending back response: ",res.result);
+  ROS_INFO("Sending back response",res.result);
   std_msgs::String result;
   result.data = res.result;
   roulette_publisher.publish(result);
