@@ -1,11 +1,11 @@
 #include "ros/ros.h"
 #include "package_lab1/Roulette_bet.h"
 #include "std_msgs/String.h"
-#include "std_msgs/Bool.h"
 #include <cstdlib>
 #include <string>
 #include <cstring>
 #include <ctime>
+#include <string.h>
 
 ros::ServiceServer service;
 ros::Publisher roulette_publisher;
@@ -14,20 +14,33 @@ ros::Subscriber result_subscriber;
 bool win_lose(package_lab1::Roulette_bet::Request  &req,
          package_lab1::Roulette_bet::Response &res)
 {
-  srand(time(0));
- 
-  if (time(0) % 2 == 0) 
-  {    
-    res.result = std::string("win").c_str();
+  if ((req.colour != std::string("red").c_str()) and (req.colour != std::string("black").c_str())) 
+  {
+    ROS_INFO("Enter correct colour");
+    res.result = std::string("error").c_str();
+  }
+  else if ((req.number < 1) or (req.number > 36))
+  {
+    ROS_INFO("Enter correct number");
+    res.result = std::string("error").c_str();
   }
   else
   {
-    res.result = std::string("lose").c_str();
+    srand(time(0));
+ 
+    if (time(0) % 2 == 0) 
+    {    
+      res.result = std::string("win").c_str();
+    }
+    else
+    {
+      res.result = std::string("lose").c_str();
+    }
+    std_msgs::String result;
+    result.data = res.result;
+    roulette_publisher.publish(result);
+    return true;
   }
-  std_msgs::String result;
-  result.data = res.result;
-  roulette_publisher.publish(result);
-  return true;
 }
 
 void result_callback(const std_msgs::String::ConstPtr& msg)
