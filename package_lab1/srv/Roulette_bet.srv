@@ -1,3 +1,4 @@
-string colour_number
+string colour
+int32 number
 ---
 string result
