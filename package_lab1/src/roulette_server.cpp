@@ -14,7 +14,19 @@ ros::Subscriber result_subscriber;
 bool win_lose(package_lab1::Roulette_bet::Request  &req,
          package_lab1::Roulette_bet::Response &res)
 {
-  if ((req.colour != std::string("red").c_str()) and (req.colour != std::string("black").c_str())) 
+  if ((req.colour == std::string("green").c_str()) and (req.number == 0)) 
+  {
+    srand(time(0)); 
+    if (time(0) % 2 == 0) 
+    {    
+      res.result = std::string("win").c_str();
+    }
+    else
+    {
+      res.result = std::string("lose").c_str();
+    }
+  }
+  else if ((req.colour != std::string("red").c_str()) and (req.colour != std::string("black").c_str())) 
   {
     ROS_INFO("Enter correct colour");
     res.result = std::string("error").c_str();
@@ -39,8 +51,8 @@ bool win_lose(package_lab1::Roulette_bet::Request  &req,
     std_msgs::String result;
     result.data = res.result;
     roulette_publisher.publish(result);
-    return true;
   }
+  return true;
 }
 
 void result_callback(const std_msgs::String::ConstPtr& msg)
